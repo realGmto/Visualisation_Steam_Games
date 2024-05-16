@@ -1,0 +1,45 @@
+
+header a{
+    font-family: 'Roboto';
+    font-size: 42px;
+}
+
+text{
+    fill: #E0E1E6;
+    font-family: 'Roboto';
+}
+
+h1, h2{
+    font-family: 'Roboto';
+    margin: 2rem 0;
+}
+#histogram{
+    width: 100%;
+}
+
+#pie_charts1, #pie_charts2, #pie_charts3{
+    width: 150px;
+    height: 150px;
+}
+
+#main{
+    background-color: #16113A;
+    height: 100%;
+    padding-top: 1rem;
+}
+
+.svg-container{
+    background-clip: content-box;
+    background-color: #272953;
+    width: 100%;
+    border-radius: 20px;
+}
+
+.row{
+    margin-bottom: 1rem;
+}
+
+.Apply-white{
+    color: #E0E1E6;
+    font-family: 'Roboto';
+}
