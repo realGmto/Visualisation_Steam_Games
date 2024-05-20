@@ -13,8 +13,16 @@ h1, h2{
     font-family: 'Roboto';
     margin: 2rem 0;
 }
-#histogram{
+#histogram, #bar_chart, #line_diagram{
     width: 100%;
+}
+
+#bar_chart{
+    height: 750px;
+}
+
+#line_diagram{
+    height: 300px;
 }
 
 #pie_charts1, #pie_charts2, #pie_charts3{
@@ -42,4 +50,19 @@ h1, h2{
 .Apply-white{
     color: #E0E1E6;
     font-family: 'Roboto';
+}
+
+#tooltip {
+    position: absolute;
+    text-align: center;
+    width: auto;
+    height: auto;
+    padding: 5px;
+    font: 12px 'Roboto';
+    background: #46476E;
+    color: #E0E1E6;
+    border: 0;
+    border-radius: 5px;
+    pointer-events: none;
+    opacity: 0;
 }
