@@ -89,3 +89,33 @@ function Draw_line_diagram(){
         .attr("transform", "rotate(-90)")
         .text("Average Price");
 }
+
+function update_line_diagram(data) {
+    // Update scales
+    x.domain([d3.min(data, d => d.date), d3.max(data, d => d.date)]);
+    y.domain([0, d3.max(data, d => d.value)]).nice();
+
+    const svg = d3.select("#line_diagram")
+    // Update axes
+    svg.select(".x.axis").call(xAxis);
+    svg.select(".y.axis").call(yAxis);
+
+    // Update line path
+    svg.select(".line")
+        .datum(data)
+        .attr("d", line);
+
+    // Update circles
+    const circles = svg.selectAll(".dot")
+        .data(data);
+
+    circles.enter().append("circle")
+        .attr("class", "dot")
+        .attr("r", 5)
+        .merge(circles)
+        .attr("cx", d => x(d.date))
+        .attr("cy", d => y(d.value))
+        .attr('fill','#E5C852');
+
+    circles.exit().remove();
+}

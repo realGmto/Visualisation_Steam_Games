@@ -45,7 +45,16 @@ function Draw_Histogram(){
             .style("opacity", 0);
     })
     .on('click',e =>{       // On click event that will be needed later
-        console.log(e.srcElement.__data__)
+                            // This gets year: e.srcElement.__data__.x
+        data = [
+            { date: new Date(2023, 0, 1), value: 25 },
+            { date: new Date(2023, 1, 1), value: 15 },
+            { date: new Date(2023, 2, 1), value: 55 },
+            { date: new Date(2023, 3, 1), value: 45 },
+            { date: new Date(2023, 4, 1), value: 75 },
+            { date: new Date(2023, 5, 1), value: 60 },
+        ];
+        update_line_diagram(data);
     });
 
     // Add x-axis
