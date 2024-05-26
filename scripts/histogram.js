@@ -1,89 +1,117 @@
-function Draw_Histogram(){
-    // Set dimensions for the histogram
-    const width = 600;
-    const height = 500;
-    const margin = { top: 20, right: 30, bottom: 50, left: 50 };
+// Set dimensions for the histogram
+const width_hist = 600;
+const height_hist = 500;
+const margin_hist = { top: 20, right: 30, bottom: 50, left: 60 };
+const innerWidth_hist = width_hist - margin_hist.left - margin_hist.right;
+const innerHeight_hist = height_hist - margin_hist.top - margin_hist.bottom;
 
-    const svg = d3.select('#histogram');
+const svg_hist = d3.select('#histogram')
+    .attr('width', width_hist)
+    .attr('height', height_hist);
 
-    // Create scales
-    const x = d3.scaleLinear()
-    .domain(d3.extent(data_histogram, d => d.x))
-    .range([margin.left, width-margin.right]);
+// Create scales
+const x_hist = d3.scaleLinear().range([margin_hist.left, width_hist - margin_hist.right]);
+const y_hist = d3.scaleLinear().range([height_hist - margin_hist.bottom, margin_hist.top]);
 
-    const y = d3.scaleLinear()
-    .domain([0, d3.max(data_histogram, d => d.y)])
-    .nice()
-    .range([height - margin.bottom, margin.top]);
+const xAxis_hist = svg_hist.append("g")
+    .attr("class", "x-axis Apply-white")
+    .attr("transform", `translate(0,${height_hist - margin_hist.bottom})`);
 
-    // Draw bars
-    svg.selectAll('rect')
-    .data(data_histogram)
-    .enter()
-    .append('rect')
-    .attr('x', d => x(d.x))
-    .attr('width', 40)
-    .attr('y', d => y(d.y))
-    .attr('height', d =>(height - margin.bottom)-y(d.y))
-    .attr('fill', '#01D1FF')
-    .on("mouseover", function(event, d) {
-        d3.select("#tooltip")
-            .html(`<b>Year:</b> ${d.x}<br><b>Released Games:</b> ${d.y}`)  //This will need to be updated
-            .transition()
-            .duration(350)
-            .style("opacity", 1);
-    })
-    .on("mousemove", function(event) {
-        d3.select("#tooltip")
-            .style("left", (event.pageX + 5) + "px")
-            .style("top", (event.pageY - 28) + "px");
-    })
-    .on("mouseout", function() {
-        d3.select("#tooltip")
-            .transition()
-            .duration(350)
-            .style("opacity", 0);
-    })
-    .on('click',e =>{       // On click event that will be needed later
-                            // This gets year: e.srcElement.__data__.x
-        data = [
-            { date: new Date(2023, 0, 1), value: 25 },
-            { date: new Date(2023, 1, 1), value: 15 },
-            { date: new Date(2023, 2, 1), value: 55 },
-            { date: new Date(2023, 3, 1), value: 45 },
-            { date: new Date(2023, 4, 1), value: 75 },
-            { date: new Date(2023, 5, 1), value: 60 },
-        ];
-        update_line_diagram(data);
-    });
+const yAxis_hist = svg_hist.append("g")
+    .attr("class", "y-axis Apply-white")
+    .attr('transform', `translate(${margin_hist.left},0)`);
 
-    // Add x-axis
-    svg.append('g')
-    .attr('transform', `translate(0,${height - margin.bottom})`)
-    .attr('class','Apply-white')
-    .call(d3.axisBottom(x));
 
-    // Add y-axis
-    svg.append('g')
-    .attr('transform', `translate(${margin.left},0)`)
-    .attr('class','Apply-white')
-    .call(d3.axisLeft(y).ticks(10));
 
-    // Add x-axis label
-    svg.append('text')
-    .attr('transform', `translate(${width/2},${height - margin.bottom/4})`)
-    .style('text-anchor', 'middle')
-    .attr('class','Apply-white')
-    .text('Year');
+function Draw_Histogram() {
+    // Set the domains of the scales based on data
+    x_hist.domain(d3.extent(data_histogram, d => d.x));
+    y_hist.domain([0, d3.max(data_histogram, d => d.y)]).nice();
 
-    // Add y-axis label
-    svg.append('text')
-    .attr('class','Apply-white')
-    .attr('x', 0 -height/2 )
-    .attr('y', 0 + margin.left)
-    .attr('transform', 'rotate(-90)')
-    .attr('dy', '1em')
-    .style('text-anchor', 'middle')
-    .text('Released games');
+    // Select and bind data to bars
+    const bars = svg_hist.selectAll('rect').data(data_histogram);
 
+    // Handle the exit selection (remove old bars)
+    bars.exit().remove();
+
+    // Handle the enter selection (create new bars)
+    bars.enter().append('rect')
+        .merge(bars) // Merge enter selection with update selection
+        .attr('x', d => x_hist(d.x))
+        .attr('width', 40)
+        .attr('y', d => y_hist(d.y))
+        .attr('height', d => (height_hist - margin_hist.bottom) - y_hist(d.y))
+        .attr('fill', '#01D1FF')
+        .style('cursor','pointer')
+        .on("mouseover", function(event, d) {
+            d3.select("#tooltip")
+                .html(`<b>Year:</b> ${d.x}<br><b>Released Games:</b> ${d.y}`)
+                .transition()
+                .duration(350)
+                .style("opacity", 1);
+        })
+        .on("mousemove", function(event) {
+            d3.select("#tooltip")
+                .style("left", (event.pageX + 5) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function() {
+            d3.select("#tooltip")
+                .transition()
+                .duration(350)
+                .style("opacity", 0);
+        })
+        .on('click', e => {
+            const year = e.srcElement.__data__.x;
+            if (filters.includes(year)) {
+                alert("Filter is already added");
+            } else {
+                filters.push(year);
+                AddToFilterBar();
+            }
+        });
+
+    xAxis_hist.transition().duration(750).call(d3.axisBottom(x_hist).ticks());
+    yAxis_hist.transition().duration(750).call(d3.axisLeft(y_hist).tickSize(0).tickPadding(10));
+
+    // Add x-axis label if not already present
+    if (svg_hist.select('.x-axis-label').empty()) {
+        svg_hist.append('text')
+            .attr('class', 'x-axis-label Apply-white')
+            .attr('transform', `translate(${width_hist / 2},${height_hist - margin_hist.bottom / 4})`)
+            .style('text-anchor', 'middle')
+            .text('Year');
+    }
+
+    // Add y-axis label if not already present
+    if (svg_hist.select('.y-axis-label').empty()) {
+        svg_hist.append('text')
+            .attr('class', 'y-axis-label Apply-white')
+            .attr('x', 0 - height_hist / 2)
+            .attr('y', 0)
+            .attr('transform', 'rotate(-90)')
+            .attr('dy', '1em')
+            .style('text-anchor', 'middle')
+            .text('Released games');
+    }
+}
+
+function updateHistogram(){
+    x_hist.domain(d3.extent(data_histogram, d => d.x));
+    y_hist.domain([0, d3.max(data_histogram, d => d.y)]).nice();
+
+    xAxis_hist.transition().duration(750).call(d3.axisBottom(x_hist).ticks(data_histogram.lenght));
+    yAxis_hist.transition().duration(750).call(d3.axisLeft(y_hist).tickSize(0).tickPadding(10));
+
+    const bars = svg_hist.selectAll('rect').data(data_histogram);
+
+    bars.enter().append('rect')
+        .merge(bars)
+        .attr('x', d => x_hist(d.x))
+        .attr('width', 40)
+        .attr('y', d => y_hist(d.y))
+        .attr('height', d => (height_hist - margin_hist.bottom) - y_hist(d.y))
+        .attr('fill', '#01D1FF');
+
+    bars.exit().transition().duration(750).remove();
 }

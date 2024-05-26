@@ -1,33 +1,38 @@
+const width_pie = 150;
+const height_pie = 150;
+const radius_pie = Math.min(width_pie, height_pie) / 2;
+
+color_palette = ['#0ED354','#C0324F']
+const color_pie = d3.scaleOrdinal(color_palette);
+
+const svg1 = d3.select('#pie_charts1').append('g');
+const svg2 = d3.select('#pie_charts2').append('g');
+const svg3 = d3.select('#pie_charts3').append('g');
+
+const arc = d3.arc().innerRadius(0).outerRadius(radius_pie);
+
+let arcs1;
+let arcs2;
+let arcs3;
+
+
 function Draw_pies(){
-
-  const width = 150;
-  const height = 150;
-  const radius = Math.min(width, height) / 2;
-
-  color_palette = ['#0ED354','#C0324F']
-  const color = d3.scaleOrdinal(color_palette);
-
-    // First pie_chart
-  const svg1 = d3.select('#pie_charts1')
-                  .append('g')
-                
-
   const pie1 = d3.pie().value(d => d.value);
-  const arc1 = d3.arc().innerRadius(0).outerRadius(radius);
+  const arc1 = d3.arc().innerRadius(0).outerRadius(radius_pie);
 
-  const arcs1 = svg1.selectAll('arc')
+  arcs1 = svg1.selectAll('arc')
     .data(pie1(win))
     .enter()
     .append('g')
     .attr('class', 'arc')
-    .attr('transform',`translate(${width / 2}, ${height / 2})`);
+    .attr('transform',`translate(${width_pie / 2}, ${height_pie / 2})`);
 
   arcs1.append('path')
     .attr('d', arc1)
-    .attr('fill', d => color(d.data.label))
+    .attr('fill', d => color_pie(d.data.label))
     .on("mouseover", function(event, d) {
       d3.select("#tooltip")
-          .html(`<b>Count:</b> ${d.data.value}`)  //This will need to be updated
+          .html(`<b>OS: </b>Windows<br><b>Supports: </b>${d.data.label}<br><b>Count:</b> ${d.data.value}`)
           .transition()
           .duration(350)
           .style("opacity", 1);
@@ -43,8 +48,17 @@ function Draw_pies(){
             .duration(350)
             .style("opacity", 0);
     })
-    .on('click',e =>{       // On click event that will be needed later
-        console.log(e.srcElement.__data__)
+    .on('click',(e,d) =>{       // On click event that will be needed later
+        const object = {win: d.data.label === "Yes"? "True" : "False"};
+        const filter_objects = filters.filter(filter => typeof filter === 'object')
+        const final = filter_objects.findIndex(filter => JSON.stringify(filter) === JSON.stringify(object))
+
+        if (final !== -1) {
+          alert("Filter is already added");
+      } else {
+          filters.push(object);
+          AddToFilterBar();
+      }
     });
 
   // Add labels
@@ -57,25 +71,22 @@ function Draw_pies(){
 
 
   // Second pie_chart
-      const svg2 = d3.select('#pie_charts2')
-                      .append('g')
-
       const pie2 = d3.pie().value(d => d.value);
-      const arc2 = d3.arc().innerRadius(0).outerRadius(radius);
+      const arc2 = d3.arc().innerRadius(0).outerRadius(radius_pie);
 
-      const arcs2 = svg2.selectAll('arc')
+      arcs2 = svg2.selectAll('arc')
       .data(pie2(linux))
       .enter()
       .append('g')
       .attr('class', 'arc')
-      .attr('transform',`translate(${width / 2}, ${height / 2})`);
+      .attr('transform',`translate(${width_pie / 2}, ${height_pie / 2})`);
 
       arcs2.append('path')
       .attr('d', arc2)
-      .attr('fill', d => color(d.data.label))
+      .attr('fill', d => color_pie(d.data.label))
       .on("mouseover", function(event, d) {
         d3.select("#tooltip")
-            .html(`<b>Count:</b> ${d.data.value}`)  //This will need to be updated
+            .html(`<b>OS: </b>Linux<br><b>Supports: </b>${d.data.label}<br><b>Count:</b> ${d.data.value}`)
             .transition()
             .duration(350)
             .style("opacity", 1);
@@ -91,8 +102,17 @@ function Draw_pies(){
               .duration(350)
               .style("opacity", 0);
       })
-      .on('click',e =>{       // On click event that will be needed later
-          console.log(e.srcElement.__data__)
+      .on('click',e =>{
+        const object = {linux: d.data.label === "Yes"? "True" : "False"};
+        const filter_objects = filters.filter(filter => typeof filter === 'object')
+        const final = filter_objects.findIndex(filter => JSON.stringify(filter) === JSON.stringify(object))
+
+        if (final !== -1) {
+          alert("Filter is already added");
+      } else {
+          filters.push(object);
+          AddToFilterBar();
+      }
       });
 
       // Add labels
@@ -103,26 +123,22 @@ function Draw_pies(){
 
 
       // Third pie_chart
-
-      const svg3 = d3.select('#pie_charts3')
-                      .append('g')
-
       const pie3 = d3.pie().value(d => d.value);
-      const arc3 = d3.arc().innerRadius(0).outerRadius(radius);
+      const arc3 = d3.arc().innerRadius(0).outerRadius(radius_pie);
 
-      const arcs3 = svg3.selectAll('arc')
+      arcs3 = svg3.selectAll('arc')
       .data(pie3(mac))
       .enter()
       .append('g')
       .attr('class', 'arc')
-      .attr('transform',`translate(${width / 2}, ${height / 2})`);
+      .attr('transform',`translate(${width_pie / 2}, ${height_pie / 2})`);
 
       arcs3.append('path')
       .attr('d', arc3)
-      .attr('fill', d => color(d.data.label))
+      .attr('fill', d => color_pie(d.data.label))
       .on("mouseover", function(event, d) {
         d3.select("#tooltip")
-            .html(`<b>Count:</b> ${d.data.value}`)  //This will need to be updated
+            .html(`<b>OS: </b>MacOS<br><b>Supports: </b>${d.data.label}<br><b>Count:</b> ${d.data.value}`)
             .transition()
             .duration(350)
             .style("opacity", 1);
@@ -138,8 +154,17 @@ function Draw_pies(){
               .duration(350)
               .style("opacity", 0);
       })
-      .on('click',e =>{       // On click event that will be needed later
-          console.log(e.srcElement.__data__)
+      .on('click',e =>{
+        const object = {mac: d.data.label === "Yes"? "True" : "False"};
+        const filter_objects = filters.filter(filter => typeof filter === 'object')
+        const final = filter_objects.findIndex(filter => JSON.stringify(filter) === JSON.stringify(object))
+
+        if (final !== -1) {
+          alert("Filter is already added");
+      } else {
+          filters.push(object);
+          AddToFilterBar();
+      }
       });
 
       // Add labels
@@ -147,4 +172,21 @@ function Draw_pies(){
       .attr('transform', d => `translate(${arc2.centroid(d)})`)
       .attr('text-anchor', 'middle')
       .text(d => d.data.label);
+}
+
+function updatePies(){
+  // First Pie
+  arcs1 = arcs1.data(win);
+
+  // Update paths
+  arcs1.select("path")
+      .transition()
+      .duration(750)
+      .attrTween("d", function(d) {
+          var interpolate = d3.interpolate(this._current, d);
+          this._current = interpolate(0);
+          return function(t) {
+              return arc(interpolate(t));
+          };
+      });
 }

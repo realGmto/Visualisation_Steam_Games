@@ -1,57 +1,65 @@
+const margin_line = { top: 10, right: 30, bottom: 15, left: 40 },
+          width_line = 1250 - margin_line.left - margin_line.right,
+          height_line = 300 - margin_line.top - margin_line.bottom;
+
+const innerWidth_line = width_line - margin_line.left - margin_line.right;
+const innerHeight_line = height_line - margin_line.top - margin_line.bottom;
+
+const svg_line = d3.select("#line_diagram").append("g")
+    .attr("transform", `translate(${margin_line.left},${margin_line.top})`);
+
+let x_line;
+let y_line;
+
+const xAxis_line = svg_line.append("g")
+            .attr("class", "x-axis")
+            .attr('class','Apply-white')
+            .attr("transform", `translate(0,${innerHeight_line})`);
+
+const yAxis_line = svg_line.append("g")
+            .attr("class", "y-axis")
+            .attr('class','Apply-white');
+
+
+let line;
+
+
 function Draw_line_diagram(){
-    const margin = { top: 10, right: 30, bottom: 15, left: 40 },
-          width = 1200 - margin.left - margin.right,
-          height = 300 - margin.top - margin.bottom;
-    
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
-
-    const svg = d3.select("#line_diagram").append("g")
-        .attr("transform", `translate(${margin.left},${margin.top})`);
-
-    const x = d3.scaleTime()
+    x_line = d3.scaleTime()
         .domain(d3.extent(data_line, d => d.time))
-        .range([0, innerWidth]);
+        .range([0, innerWidth_line]);
 
-    const y = d3.scaleLinear()
+    y_line = d3.scaleLinear()
         .domain([0, Math.max(...data_line.map(o => o.price))])   //DO NOT USE d3.max() for some reason it doesn't return correctly. ONLY ON THIS!
         .nice()
-        .range([innerHeight, 0]);
+        .range([innerHeight_line, 0]);
 
-    const xAxis = d3.axisBottom(x);
-    const yAxis = d3.axisLeft(y);
+    xAxis_line.transition().duration(750).call(d3.axisBottom(x_line));
+    yAxis_line.transition().duration(750).call(d3.axisLeft(y_line).tickSize(0).tickPadding(10))
 
-    svg.append("g")
-        .attr("transform", `translate(0,${innerHeight})`)
-        .attr('class','Apply-white')
-        .call(xAxis);
-
-    svg.append("g")
-        .attr("class", "y-axis")
-        .attr('class','Apply-white')
-        .call(yAxis);
-
-    const line = d3.line()
+    line = d3.line()
         .defined(d => !isNaN(d.price))
-        .x(d => x(d.time))
-        .y(d => y(d.price));
+        .x(d => x_line(d.time))
+        .y(d => y_line(d.price));
 
-    svg.append("path")
+    svg_line.append("path")
         .datum(data_line)
         .attr("class", "line")
         .attr("d", line)
         .attr('fill','none')
         .style("stroke", "#01D1FF");
 
+    const circles = svg_line.selectAll(".dot")
+        .data(data_line);
+
     // Adding circles to each data point
-    svg.selectAll("circle")
-        .data(data_line)
-        .enter().append("circle")
+    circles.enter().append("circle")
         .attr("class", "dot")
-        .attr("cx", d => x(d.time))
-        .attr("cy", d => y(d.price))
+        .attr("cx", d => x_line(d.time))
+        .attr("cy", d => y_line(d.price))
         .attr("r", 5)
         .attr('fill','#E5C852')
+        .style('cursor','pointer')
         .on("mouseover", function(event, d) {
             d3.select("#tooltip")
                 .html(`<b>Year:</b> ${d.time}<br><b>Average Price:</b> ${d.price}`)  //This will need to be updated
@@ -71,51 +79,73 @@ function Draw_line_diagram(){
                 .style("opacity", 0);
         })
         .on('click',e =>{       // On click event that will be needed later
-            console.log(e.srcElement.__data__)
-        });
+            if (filters.includes(e.srcElement.__data__.time)){
+                alert("Filter is already added");
+            }
+            else{
+                filters.push(e.srcElement.__data__.time);
+                AddToFilterBar();
+            }
+        })
+        .merge(circles)
+        .transition().duration(750)
+        .attr("cx", d => x_line(d.time))
+        .attr("cy", d => y_line(d.price));
     
     // Add labels for the axes
-    svg.append("text")
+    svg_line.append("text")
         .attr("class", "x-label")
-        .attr("x", width / 2 + margin.left)
-        .attr("y", height - 10)
+        .attr("x", width_line / 2 + margin_line.left)
+        .attr("y", height_line - 10)
         .text("Year");
 
-    svg.append("text")
+    svg_line.append("text")
         .attr("class", "y-label")
         .attr("text-anchor", "middle")
-        .attr("x", -height / 2)
+        .attr("x", -height_line / 2)
         .attr("y", -22)
         .attr("transform", "rotate(-90)")
         .text("Average Price");
 }
 
-function update_line_diagram(data) {
-    // Update scales
-    x.domain([d3.min(data, d => d.date), d3.max(data, d => d.date)]);
-    y.domain([0, d3.max(data, d => d.value)]).nice();
 
-    const svg = d3.select("#line_diagram")
+function update_line_diagram() {
+    // Update scales
+    x_line.domain(d3.extent(data_line, d => d.time));
+    y_line.domain([0, Math.max(...data_line.map(o => o.price))]).nice();
+
+    const svg = d3.select("#line_diagram");
+
     // Update axes
-    svg.select(".x.axis").call(xAxis);
-    svg.select(".y.axis").call(yAxis);
+    xAxis_line.transition().duration(750).call(d3.axisBottom(x_line));
+    yAxis_line.transition().duration(750).call(d3.axisLeft(y_line).tickSize(0).tickPadding(10));
+
+    // Define the line
+    const line = d3.line()
+        .defined(d => !isNaN(d.price))
+        .x(d => x_line(d.time))
+        .y(d => y_line(d.price));
 
     // Update line path
     svg.select(".line")
-        .datum(data)
+        .datum(data_line)
+        .transition().duration(750)
         .attr("d", line);
 
     // Update circles
     const circles = svg.selectAll(".dot")
-        .data(data);
+        .data(data_line);
 
     circles.enter().append("circle")
         .attr("class", "dot")
         .attr("r", 5)
+        .attr("cx", d => x_line(d.time))
+        .attr("cy", d => y_line(d.price))
+        .attr('fill','#E5C852')
         .merge(circles)
-        .attr("cx", d => x(d.date))
-        .attr("cy", d => y(d.value))
-        .attr('fill','#E5C852');
+        .transition().duration(750)
+        .attr("cx", d => x_line(d.time))
+        .attr("cy", d => y_line(d.price));
 
-    circles.exit().remove();
+    circles.exit().transition().duration(250).remove();
 }

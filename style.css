@@ -36,6 +36,36 @@ h1, h2{
     padding-top: 1rem;
 }
 
+#filter-bar{
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
+.filter{
+    background-color: #272953;
+    border-radius: 20px;
+    font-family: 'Roboto';
+    color: #E0E1E6;
+    padding: 0.5rem;
+    border: none;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.filter:hover{
+    box-shadow: 0 0 10px rgba(255, 65, 54, 0.8), 0 0 20px rgba(255, 65, 54, 0.6), 0 0 30px rgba(255, 65, 54, 0.4);
+}
+
+.apply-filters{
+    margin-left: auto;
+    border: none;
+    border-radius: 20px;
+    background-color: #01D1FF;
+    color: #272953;
+    padding: 0.5rem;
+}
+
 .svg-container{
     background-clip: content-box;
     background-color: #272953;

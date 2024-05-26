@@ -2,8 +2,8 @@
 fetch('data/games_data.json')
   .then(response => response.json())
   .then(data => {
-    filtered_data = data;
-    all_data = filtered_data;
+    all_data = data;
+    filtered_data = all_data;
     // Data for Pie charts
     win[0].value = filtered_data.filter( entry => entry.win === 'True').length
     win[1].value = filtered_data.filter(entry => entry.win === 'False' ).length
