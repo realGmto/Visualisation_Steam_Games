@@ -48,7 +48,7 @@ function Draw_pies(){
             .duration(350)
             .style("opacity", 0);
     })
-    .on('click',(e,d) =>{       // On click event that will be needed later
+    .on('click',(e,d) =>{
         const object = {win: d.data.label === "Yes"? "True" : "False"};
         const filter_objects = filters.filter(filter => typeof filter === 'object')
         const final = filter_objects.findIndex(filter => JSON.stringify(filter) === JSON.stringify(object))
@@ -102,7 +102,7 @@ function Draw_pies(){
               .duration(350)
               .style("opacity", 0);
       })
-      .on('click',e =>{
+      .on('click',(e,d) =>{
         const object = {linux: d.data.label === "Yes"? "True" : "False"};
         const filter_objects = filters.filter(filter => typeof filter === 'object')
         const final = filter_objects.findIndex(filter => JSON.stringify(filter) === JSON.stringify(object))
@@ -136,6 +136,7 @@ function Draw_pies(){
       arcs3.append('path')
       .attr('d', arc3)
       .attr('fill', d => color_pie(d.data.label))
+      .style('cursor','pointer')
       .on("mouseover", function(event, d) {
         d3.select("#tooltip")
             .html(`<b>OS: </b>MacOS<br><b>Supports: </b>${d.data.label}<br><b>Count:</b> ${d.data.value}`)
@@ -154,7 +155,7 @@ function Draw_pies(){
               .duration(350)
               .style("opacity", 0);
       })
-      .on('click',e =>{
+      .on('click',(e,d) =>{
         const object = {mac: d.data.label === "Yes"? "True" : "False"};
         const filter_objects = filters.filter(filter => typeof filter === 'object')
         const final = filter_objects.findIndex(filter => JSON.stringify(filter) === JSON.stringify(object))
