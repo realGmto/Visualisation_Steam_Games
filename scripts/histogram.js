@@ -105,7 +105,7 @@ function updateHistogram(){
     x_hist.domain(d3.extent(data_histogram, d => d.x));
     y_hist.domain([0, d3.max(data_histogram, d => d.y)]).nice();
 
-    xAxis_hist.transition().duration(750).call(d3.axisBottom(x_hist).ticks(data_histogram.lenght));
+    xAxis_hist.transition().duration(750).call(d3.axisBottom(x_hist).ticks().tickFormat(x => `${x.toFixed(0)}`));
     yAxis_hist.transition().duration(750).call(d3.axisLeft(y_hist).tickSize(0).tickPadding(10));
 
     const bars = svg_hist.selectAll('rect').data(data_histogram);
