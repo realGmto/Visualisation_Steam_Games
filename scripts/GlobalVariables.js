@@ -35,7 +35,7 @@ function AddToFilterBar(){
         .replaceAll(']','')
         .replaceAll('{','')
         .replaceAll('}','')
-        .replaceAll('"',' ');
+        .replaceAll('"','');
     }else
         newButton.textContent = filters.slice(-1).toString();
 
@@ -56,16 +56,19 @@ function RemoveFilter(event){
 
     const text_filter = clickedButton.textContent;
 
+
+
     filters = filters.filter(filter => { 
-        if (typeof filter !== 'object') 
+        if (typeof filter !== 'object'){
             return filter.toString() !== text_filter;
+        }
         else{
             temp = JSON.stringify(filter)
             .replaceAll('[','')
             .replaceAll(']','')
             .replaceAll('{','')
             .replaceAll('}','')
-            .replaceAll('"',' ');
+            .replaceAll('"','');
             return temp !== text_filter
         }
     });
