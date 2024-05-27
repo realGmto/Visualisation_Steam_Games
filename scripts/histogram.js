@@ -32,11 +32,10 @@ function Draw_Histogram() {
     const bars = svg_hist.selectAll('rect').data(data_histogram);
 
     // Handle the exit selection (remove old bars)
-    bars.exit().remove();
+    bars.exit().transition().duration(750).style("opacity", 0).remove();
 
     // Handle the enter selection (create new bars)
     bars.enter().append('rect')
-        .merge(bars) // Merge enter selection with update selection
         .attr('x', d => x_hist(d.x))
         .attr('width', 40)
         .attr('y', d => y_hist(d.y))
@@ -69,7 +68,13 @@ function Draw_Histogram() {
                 filters.push(year);
                 AddToFilterBar();
             }
-        });
+        })
+        .merge(bars)
+        .transition().duration(750)
+        .attr('x', d => x_hist(d.x))
+        .attr('width', 40)
+        .attr('y', d => y_hist(d.y))
+        .attr('height', d => (height_hist - margin_hist.bottom) - y_hist(d.y));
 
     xAxis_hist.transition().duration(750).call(d3.axisBottom(x_hist).ticks());
     yAxis_hist.transition().duration(750).call(d3.axisLeft(y_hist).tickSize(0).tickPadding(10));
@@ -106,12 +111,45 @@ function updateHistogram(){
     const bars = svg_hist.selectAll('rect').data(data_histogram);
 
     bars.enter().append('rect')
-        .merge(bars)
         .attr('x', d => x_hist(d.x))
         .attr('width', 40)
         .attr('y', d => y_hist(d.y))
         .attr('height', d => (height_hist - margin_hist.bottom) - y_hist(d.y))
-        .attr('fill', '#01D1FF');
+        .attr('fill', '#01D1FF')
+        .style('cursor','pointer')
+        .on("mouseover", function(event, d) {                           //This must be added in case all filters are dropped and there are no more old rect
+            d3.select("#tooltip")
+                .html(`<b>Year:</b> ${d.x}<br><b>Released Games:</b> ${d.y}`)
+                .transition()
+                .duration(350)
+                .style("opacity", 1);
+        })
+        .on("mousemove", function(event) {
+            d3.select("#tooltip")
+                .style("left", (event.pageX + 5) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function() {
+            d3.select("#tooltip")
+                .transition()
+                .duration(350)
+                .style("opacity", 0);
+        })
+        .on('click', e => {
+            const year = e.srcElement.__data__.x;
+            if (filters.includes(year)) {
+                alert("Filter is already added");
+            } else {
+                filters.push(year);
+                AddToFilterBar();
+            }
+        })
+        .merge(bars)
+        .transition().duration(750)
+        .attr('x', d => x_hist(d.x))
+        .attr('width', 40)
+        .attr('y', d => y_hist(d.y))
+        .attr('height', d => (height_hist - margin_hist.bottom) - y_hist(d.y));
 
-    bars.exit().transition().duration(750).remove();
+        bars.exit().transition().duration(750).style("opacity", 0).remove();
 }

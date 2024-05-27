@@ -16,13 +16,10 @@ const x_bar = d3.scaleLinear().range([0, innerWidth_bar]);
 const y_bar = d3.scaleBand().range([0, innerHeight_bar]).padding(0.1);
 
 const xAxis_bar = g_bar.append("g")
-                .attr("class", "x-axis")
-                .attr('class','Apply-white')
+                .attr("class", "x-axis Apply-white")
                 .attr("transform", `translate(0,${innerHeight_bar})`);
 
-const yAxis_bar = g_bar.append("g")
-                .attr("class", "y-axis")
-                .attr('class','Apply-white');
+let yAxis_bar;
 
 
 function Draw_Bar_Chart(){
@@ -72,14 +69,16 @@ function Draw_Bar_Chart(){
     .attr("width", d => x_bar(d.x))
     .attr("height", y_bar.bandwidth());
 
-    bars.exit().transition().duration(750).remove();
+    bars.exit().transition().duration(750).style("opacity", 0).remove();
+
+    yAxis_bar = g_bar.append("g")
+            .attr("class", "y-axis Apply-white")
+            .style('font-size','15px');
 
     xAxis_bar.transition().duration(750).call(d3.axisBottom(x_bar));
-    yAxis_bar.attr("class", "y-axis")
-                .style('font-size','15px')
-                .transition().duration(750)
-                .call(d3.axisLeft(y_bar).tickSize(0).tickPadding(10))
-                .selectAll("text")
+    yAxis_bar.transition().duration(750).call(d3.axisLeft(y_bar).tickSize(0).tickPadding(10));
+
+    yAxis_bar.selectAll("text")
                 .style("text-anchor", "start");
 
     svg_bar.append("text")
@@ -103,9 +102,6 @@ function updateBarChart() {
     x_bar.domain([0, d3.max(data_ratings, d => d.x)]).nice();
     y_bar.domain(data_ratings.map(d => d.y));
 
-    xAxis_bar.transition().duration(750).call(d3.axisBottom(x_bar));
-    yAxis_bar.transition().duration(750).call(d3.axisLeft(y_bar).tickSize(0).tickPadding(10));
-
     const bars = g_bar.selectAll("rect").data(data_ratings);
 
     bars.enter().append("rect")
@@ -114,6 +110,33 @@ function updateBarChart() {
         .attr("width", d => x_bar(d.x))
         .attr("height", y_bar.bandwidth())
         .attr('fill', '#4E8CF6')
+        .style('cursor','pointer')
+        .on("mouseover", function(event, d) {                               //This must be added in case all filters are dropped and there are no more old elements
+            d3.select("#tooltip")
+                .html(`<b>Category:</b> ${d.y}<br><b>Number of Games:</b> ${d.x}`)
+                .transition()
+                .duration(350)
+                .style("opacity", 1);
+        })
+        .on("mousemove", function(event) {
+            d3.select("#tooltip")
+                .style("left", (event.pageX + 5) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function() {
+            d3.select("#tooltip")
+                .transition()
+                .duration(350)
+                .style("opacity", 0);
+        })
+        .on("click", e => {
+            if (filters.includes(e.srcElement.__data__.y)){
+                alert("Filter is already added");
+            }else{
+                filters.push(e.srcElement.__data__.y);
+                AddToFilterBar();
+            }
+        })
         .merge(bars)
         .transition().duration(750)
         .attr("x", 0)
@@ -121,5 +144,16 @@ function updateBarChart() {
         .attr("width", d => x_bar(d.x))
         .attr("height", y_bar.bandwidth());
 
-    bars.exit().transition().duration(750).remove();
+    yAxis_bar.remove()                              // This is because text won't go over rect if it is not created after rect
+    yAxis_bar = g_bar.append("g")
+            .attr("class", "y-axis Apply-white")
+            .style('font-size','15px');
+
+    xAxis_bar.transition().duration(750).call(d3.axisBottom(x_bar));
+    yAxis_bar.transition().duration(750).call(d3.axisLeft(y_bar).tickSize(0).tickPadding(10));
+
+    yAxis_bar.selectAll("text")
+                .style("text-anchor", "start");
+
+    bars.exit().transition().duration(750).style("opacity", 0).remove();
 }

@@ -29,7 +29,15 @@ function AddToFilterBar(){
 
     newButton.className = "filter";
     newButton.classList.add('mx-1');
-    newButton.textContent = filters.slice(-1).toString();
+    if (typeof filters.slice(-1) === 'object'){
+        newButton.textContent = JSON.stringify(filters.slice(-1))
+        .replaceAll('[','')
+        .replaceAll(']','')
+        .replaceAll('{','')
+        .replaceAll('}','')
+        .replaceAll('"',' ');
+    }else
+        newButton.textContent = filters.slice(-1).toString();
 
     newButton.addEventListener("click",RemoveFilter);
 
@@ -48,7 +56,19 @@ function RemoveFilter(event){
 
     const text_filter = clickedButton.textContent;
 
-    filters = filters.filter(filter => filter.toString() !== text_filter);
+    filters = filters.filter(filter => { 
+        if (typeof filter !== 'object') 
+            return filter.toString() !== text_filter;
+        else{
+            temp = JSON.stringify(filter)
+            .replaceAll('[','')
+            .replaceAll(']','')
+            .replaceAll('{','')
+            .replaceAll('}','')
+            .replaceAll('"',' ');
+            return temp !== text_filter
+        }
+    });
 
     clickedButton.remove();
 }

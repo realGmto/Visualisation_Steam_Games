@@ -1,5 +1,4 @@
 function ApplyFilters(){
-    months = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
     rating_levels = ['Overwhelmingly Positive','Very Positive','Positive','Mostly Positive','Mixed','Mostly Negative','Negative','Very Negative','Overwhelmingly Negative']
     years = [2012, 2013, 2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023];
 
@@ -23,7 +22,7 @@ function ApplyFilters(){
             (
                 osFilters.findIndex(filter => JSON.stringify(filter) === JSON.stringify({win: item.win})) !== -1 ||
                 osFilters.findIndex(filter => JSON.stringify(filter) === JSON.stringify({linux: item.linux})) !== -1 ||
-                osFilters.findIndex(filter => JSON.stringify(filter) === JSON.stringify({macOS: item.mac})) !== -1
+                osFilters.findIndex(filter => JSON.stringify(filter) === JSON.stringify({mac: item.mac})) !== -1
             ) || osFilters.length === 0
         )
     );

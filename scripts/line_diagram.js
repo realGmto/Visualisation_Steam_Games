@@ -62,7 +62,7 @@ function Draw_line_diagram(){
         .style('cursor','pointer')
         .on("mouseover", function(event, d) {
             d3.select("#tooltip")
-                .html(`<b>Year:</b> ${d.time}<br><b>Average Price:</b> ${d.price}`)  //This will need to be updated
+                .html(`<b>Year:</b> ${d.time}<br><b>Average Price:</b> ${d.price}`)
                 .transition()
                 .duration(350)
                 .style("opacity", 1);
@@ -78,7 +78,7 @@ function Draw_line_diagram(){
                 .duration(350)
                 .style("opacity", 0);
         })
-        .on('click',e =>{       // On click event that will be needed later
+        .on('click',e =>{
             if (filters.includes(e.srcElement.__data__.time)){
                 alert("Filter is already added");
             }
@@ -112,7 +112,7 @@ function Draw_line_diagram(){
 function update_line_diagram() {
     // Update scales
     x_line.domain(d3.extent(data_line, d => d.time));
-    y_line.domain([0, Math.max(...data_line.map(o => o.price))]).nice();
+    y_line.domain([0, Math.max(...data_line.map(o => o.price))]);
 
     const svg = d3.select("#line_diagram");
 
@@ -142,10 +142,38 @@ function update_line_diagram() {
         .attr("cx", d => x_line(d.time))
         .attr("cy", d => y_line(d.price))
         .attr('fill','#E5C852')
+        .style('cursor','pointer')
+        .on("mouseover", function(event, d) {                                       //This must be added in case all filters are dropped and there are no more old elements
+            d3.select("#tooltip")
+                .html(`<b>Year:</b> ${d.time}<br><b>Average Price:</b> ${d.price}`)
+                .transition()
+                .duration(350)
+                .style("opacity", 1);
+        })
+        .on("mousemove", function(event) {
+            d3.select("#tooltip")
+                .style("left", (event.pageX + 5) + "px")
+                .style("top", (event.pageY - 28) + "px");
+        })
+        .on("mouseout", function() {
+            d3.select("#tooltip")
+                .transition()
+                .duration(350)
+                .style("opacity", 0);
+        })
+        .on('click',e =>{
+            if (filters.includes(e.srcElement.__data__.time)){
+                alert("Filter is already added");
+            }
+            else{
+                filters.push(e.srcElement.__data__.time);
+                AddToFilterBar();
+            }
+        })
         .merge(circles)
         .transition().duration(750)
         .attr("cx", d => x_line(d.time))
         .attr("cy", d => y_line(d.price));
 
-    circles.exit().transition().duration(250).remove();
+    circles.exit().transition().duration(750).style("opacity", 0).remove();
 }
