@@ -1,5 +1,5 @@
 // Set dimensions for the histogram
-const width_hist = 650;
+const width_hist = 600;
 const height_hist = 500;
 const margin_hist = { top: 20, right: 30, bottom: 50, left: 60 };
 const innerWidth_hist = width_hist - margin_hist.left - margin_hist.right;
@@ -81,7 +81,8 @@ function Draw_Histogram() {
     if (svg_hist.select('.x-axis-label').empty()) {
         svg_hist.append('text')
             .attr('class', 'x-axis-label Apply-white')
-            .attr('transform', `translate(${innerWidth_hist / 2},${height_hist-margin_hist.bottom/1.5})`)
+            .attr('x', innerHeight_hist / 2)
+            .attr('y', height_hist-margin_hist.bottom/1.5)
             .style('text-anchor', 'middle')
             .text('Year');
     }
