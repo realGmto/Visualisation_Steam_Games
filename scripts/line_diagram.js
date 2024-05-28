@@ -108,11 +108,6 @@ function update_line_diagram() {
     x_line.domain(d3.extent(data_line, d => d.time));
     y_line.domain([0, d3.max(data_line, d => parseFloat(d.price))]).nice();
 
-    console.log(d3.max(data_line, d => parseFloat(d.price)));
-
-    data_line.forEach( d => console.log(d.time+" = "+y_line(d.price) + ', ' + x_line(d.time)));
-
-
     // Update axes
     xAxis_line.transition().duration(750).call(d3.axisBottom(x_line).ticks().tickFormat(d3.format(".0f")));
     yAxis_line.transition().duration(750).call(d3.axisLeft(y_line).tickSize(5).tickPadding(10));
