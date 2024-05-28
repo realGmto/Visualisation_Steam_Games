@@ -75,7 +75,7 @@ function Draw_Histogram() {
         .attr('height', d => innerHeight_hist - y_hist(d.y))
 
     xAxis_hist.transition().duration(750).call(d3.axisBottom(x_hist));
-    yAxis_hist.transition().duration(750).call(d3.axisLeft(y_hist).tickSize(0).tickPadding(10));
+    yAxis_hist.transition().duration(750).call(d3.axisLeft(y_hist).tickSize(5).tickPadding(10));
 
     // Add x-axis label if not already present
     if (svg_hist.select('.x-axis-label').empty()) {
