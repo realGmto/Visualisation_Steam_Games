@@ -62,11 +62,6 @@ function ApplyFilters(){
         });
     });
 
-    data_histogram.push({           // Have to add this otherwise last column would go outside of svg
-        x: parseInt(yearFilters.slice(-1))+1,
-        y: 0
-    });
-
     // Pie Chart
     win[0].value = filtered_data.filter( entry => entry.win === 'True').length
     win[1].value = filtered_data.filter(entry => entry.win === 'False' ).length

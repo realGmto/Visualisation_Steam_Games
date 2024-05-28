@@ -36,10 +36,6 @@ fetch('data/games_data.json')
             price: (sum / temp_data.length).toFixed(2)
         });
     });
-    data_histogram.push({           // Have to add this otherwise last column would go outside of svg
-        x: 2024,
-        y: 0
-    });
 
 
     // Data for bar_chart

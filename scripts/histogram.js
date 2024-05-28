@@ -1,31 +1,29 @@
 // Set dimensions for the histogram
-const width_hist = 600;
+const width_hist = 650;
 const height_hist = 500;
 const margin_hist = { top: 20, right: 30, bottom: 50, left: 60 };
 const innerWidth_hist = width_hist - margin_hist.left - margin_hist.right;
 const innerHeight_hist = height_hist - margin_hist.top - margin_hist.bottom;
 
-const svg_hist = d3.select('#histogram')
-    .attr('width', width_hist)
-    .attr('height', height_hist);
+const svg_hist = d3.select('#histogram').append('g')
+    .attr("transform", `translate(${margin_hist.left},${margin_hist.top})`);
 
 // Create scales
-const x_hist = d3.scaleLinear().range([margin_hist.left, width_hist - margin_hist.right]);
-const y_hist = d3.scaleLinear().range([height_hist - margin_hist.bottom, margin_hist.top]);
+const x_hist = d3.scaleBand().range([0, innerWidth_hist]).padding(0.1);
+const y_hist = d3.scaleLinear().range([innerHeight_hist, 0]);
 
 const xAxis_hist = svg_hist.append("g")
     .attr("class", "x-axis Apply-white")
-    .attr("transform", `translate(0,${height_hist - margin_hist.bottom})`);
+    .attr("transform", `translate(0,${innerHeight_hist})`);
 
 const yAxis_hist = svg_hist.append("g")
-    .attr("class", "y-axis Apply-white")
-    .attr('transform', `translate(${margin_hist.left},0)`);
+    .attr("class", "y-axis Apply-white");
 
 
 
 function Draw_Histogram() {
     // Set the domains of the scales based on data
-    x_hist.domain(d3.extent(data_histogram, d => d.x));
+    x_hist.domain(data_histogram.map(d => d.x));
     y_hist.domain([0, d3.max(data_histogram, d => d.y)]).nice();
 
     // Select and bind data to bars
@@ -37,9 +35,9 @@ function Draw_Histogram() {
     // Handle the enter selection (create new bars)
     bars.enter().append('rect')
         .attr('x', d => x_hist(d.x))
-        .attr('width', 40)
         .attr('y', d => y_hist(d.y))
-        .attr('height', d => (height_hist - margin_hist.bottom) - y_hist(d.y))
+        .attr('width', x_hist.bandwidth())
+        .attr('height', d => innerHeight_hist - y_hist(d.y))
         .attr('fill', '#01D1FF')
         .style('cursor','pointer')
         .on("mouseover", function(event, d) {
@@ -72,18 +70,18 @@ function Draw_Histogram() {
         .merge(bars)
         .transition().duration(750)
         .attr('x', d => x_hist(d.x))
-        .attr('width', 40)
         .attr('y', d => y_hist(d.y))
-        .attr('height', d => (height_hist - margin_hist.bottom) - y_hist(d.y));
+        .attr('width', x_hist.bandwidth())
+        .attr('height', d => innerHeight_hist - y_hist(d.y))
 
-    xAxis_hist.transition().duration(750).call(d3.axisBottom(x_hist).ticks());
+    xAxis_hist.transition().duration(750).call(d3.axisBottom(x_hist));
     yAxis_hist.transition().duration(750).call(d3.axisLeft(y_hist).tickSize(0).tickPadding(10));
 
     // Add x-axis label if not already present
     if (svg_hist.select('.x-axis-label').empty()) {
         svg_hist.append('text')
             .attr('class', 'x-axis-label Apply-white')
-            .attr('transform', `translate(${width_hist / 2},${height_hist - margin_hist.bottom / 4})`)
+            .attr('transform', `translate(${innerWidth_hist / 2},${height_hist-margin_hist.bottom/1.5})`)
             .style('text-anchor', 'middle')
             .text('Year');
     }
@@ -92,8 +90,8 @@ function Draw_Histogram() {
     if (svg_hist.select('.y-axis-label').empty()) {
         svg_hist.append('text')
             .attr('class', 'y-axis-label Apply-white')
-            .attr('x', 0 - height_hist / 2)
-            .attr('y', 0)
+            .attr('x', 0 - innerHeight_hist / 2)
+            .attr('y', -margin_hist.left)
             .attr('transform', 'rotate(-90)')
             .attr('dy', '1em')
             .style('text-anchor', 'middle')
@@ -102,19 +100,19 @@ function Draw_Histogram() {
 }
 
 function updateHistogram(){
-    x_hist.domain(d3.extent(data_histogram, d => d.x));
+    x_hist.domain(data_histogram.map(d => d.x));
     y_hist.domain([0, d3.max(data_histogram, d => d.y)]).nice();
 
-    xAxis_hist.transition().duration(750).call(d3.axisBottom(x_hist).ticks().tickFormat(x => `${x.toFixed(0)}`));
+    xAxis_hist.transition().duration(750).call(d3.axisBottom(x_hist));
     yAxis_hist.transition().duration(750).call(d3.axisLeft(y_hist).tickSize(0).tickPadding(10));
 
     const bars = svg_hist.selectAll('rect').data(data_histogram);
 
     bars.enter().append('rect')
         .attr('x', d => x_hist(d.x))
-        .attr('width', 40)
         .attr('y', d => y_hist(d.y))
-        .attr('height', d => (height_hist - margin_hist.bottom) - y_hist(d.y))
+        .attr('width', x_hist.bandwidth())
+        .attr('height', d => innerHeight_hist - y_hist(d.y))
         .attr('fill', '#01D1FF')
         .style('cursor','pointer')
         .on("mouseover", function(event, d) {                           //This must be added in case all filters are dropped and there are no more old rect
@@ -147,9 +145,9 @@ function updateHistogram(){
         .merge(bars)
         .transition().duration(750)
         .attr('x', d => x_hist(d.x))
-        .attr('width', 40)
         .attr('y', d => y_hist(d.y))
-        .attr('height', d => (height_hist - margin_hist.bottom) - y_hist(d.y));
+        .attr('width', x_hist.bandwidth())
+        .attr('height', d => innerHeight_hist - y_hist(d.y))
 
         bars.exit().transition().duration(750).style("opacity", 0).remove();
 }
