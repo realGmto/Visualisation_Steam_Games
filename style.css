@@ -60,13 +60,28 @@ h1, h2{
     box-shadow: 0 0 10px rgba(255, 65, 54, 0.8), 0 0 20px rgba(255, 65, 54, 0.6), 0 0 30px rgba(255, 65, 54, 0.4);
 }
 
+.remove-filters:hover , .apply-filters:hover{
+    box-shadow: 0 0 15px 5px rgba(255, 255, 255, 0.8);
+}
+
+.remove-filters{
+    margin-left: auto;
+    border: none;
+    border-radius: 20px;
+    background-color: #dc3545;
+    color: #E0E1E6;
+    padding: 0.5rem;
+    transition: box-shadow 0.3s ease-in-out;
+}
+
 .apply-filters{
     margin-left: auto;
     border: none;
     border-radius: 20px;
-    background-color: #01D1FF;
-    color: #272953;
+    background-color: #4E8CF6;
+    color: #E0E1E6;
     padding: 0.5rem;
+    transition: box-shadow 0.3s ease-in-out;
 }
 
 .svg-container{

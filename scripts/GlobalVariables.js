@@ -75,3 +75,11 @@ function RemoveFilter(event){
 
     clickedButton.remove();
 }
+
+function RemoveFilters(){
+    filters = [];
+
+    document.querySelectorAll(".filter").forEach(el => el.remove());
+
+    ApplyFilters();
+}
