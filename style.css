@@ -13,16 +13,19 @@ h1, h2{
     font-family: 'Roboto';
     margin: 2rem 0;
 }
-#histogram, #bar_chart, #line_diagram{
-    width: 100%;
+#histogram{
+    height: 500px;
+    width: 600px;
 }
 
 #bar_chart{
     height: 750px;
+    width: 600px;
 }
 
 #line_diagram{
     height: 300px;
+    width: 1250px;
 }
 
 #pie_charts1, #pie_charts2, #pie_charts3{
@@ -69,8 +72,8 @@ h1, h2{
 .svg-container{
     background-clip: content-box;
     background-color: #272953;
-    width: 100%;
     border-radius: 20px;
+    text-align: center;
 }
 
 .row{
