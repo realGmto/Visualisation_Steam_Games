@@ -79,7 +79,8 @@ function Draw_Bar_Chart(){
     yAxis_bar.transition().duration(750).call(d3.axisLeft(y_bar).tickSize(0).tickPadding(10));
 
     yAxis_bar.selectAll("text")
-                .style("text-anchor", "start");
+            .style("text-anchor", "start")
+            .attr('transform','translate(12,0)');
 
     svg_bar.append("text")
         .attr("class", "x-label")
@@ -153,7 +154,8 @@ function updateBarChart() {
     yAxis_bar.transition().duration(750).call(d3.axisLeft(y_bar).tickSize(0).tickPadding(10));
 
     yAxis_bar.selectAll("text")
-                .style("text-anchor", "start");
+                .style("text-anchor", "start")
+                .attr('transform','translate(12,0)');
 
     bars.exit().transition().duration(750).style("opacity", 0).remove();
 }
