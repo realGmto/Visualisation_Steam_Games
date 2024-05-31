@@ -13,6 +13,29 @@ h1, h2{
     font-family: 'Roboto';
     margin: 2rem 0;
 }
+
+#home{
+    height: 100vh;
+    background-image: url("https://cdn.akamai.steamstatic.com/store/home/store_home_share.jpg");
+    background-position: center; /* Center the image */
+    background-repeat: no-repeat; /* Do not repeat the image */
+    background-size: cover; /* Resize the background image to cover the entire container */
+}
+
+#about{
+    background-color: #16113A;
+}
+
+#about h1{
+    font-size: 48px;
+    color: #E0E1E6;
+}
+
+#about p{
+    font-size: 32px;
+    color: #E0E1E6;
+}
+
 #histogram{
     height: 500px;
     width: 600px;
@@ -44,10 +67,13 @@ h1, h2{
     justify-content: center;
     flex-wrap: wrap;
     align-items: center;
+
+    border-image: linear-gradient(#212529, #16113A) 30;
+    border-style: solid;
 }
 
 .filter{
-    background-color: #272953;
+    background-color: #343a40;
     border-radius: 20px;
     font-family: 'Roboto';
     color: #E0E1E6;

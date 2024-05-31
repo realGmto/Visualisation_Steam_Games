@@ -17,7 +17,7 @@
                 <nav class="navbar navbar-expand-lg navbar-dark bg-dark align-items-center">
                     <ul class="navbar-nav me-auto mb-2 mb-lg-0 align-items-center">
                         <li class="nav-item">
-                            <a class="nav-link active fs-5" href="#">Home</a>
+                            <a class="nav-link active fs-5" href="#home">Home</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link active ms-lg-5 fs-5" href="#">About</a>
@@ -29,12 +29,38 @@
                 </nav>
             </div>
         </header>
-        <div class="container-fluid" id="main">
-            <div class="mb-3" id="filter-bar">
-                <button class="remove-filters mx-1" onclick="RemoveFilters()">remove</button>
-                <button class="apply-filters" onclick="ApplyFilters()">Apply</button>
+        <div id="home"></div>
+        <div id="about" class="container-fluid">
+            <div class="row mb-0 p-5 gx-3">
+                <div class="col-lg-6">
+                    <h1><b>About</b></h1>
+                    <p>
+                        This is a small data visualization project which has a purpose of showing some basic ways of visualizing data while also adding some interactivity 
+                        to it. Data that was used is Steam Games Dataset which came from kaggle. 
+                        Data has been processed so it would remove some useless columns and also reduce its size by dropping games that are older than 2012.
+                    </p>
+                </div>
+                <div class="col-lg-6">
+                    <h1><b>How to use</b></h1>
+                    <p>
+                        Usage is pretty simple. 
+                        When you get to the dashboard you will see that graphs are already created using all data. 
+                        Interactivity options are: 
+                        <br>- tooltip shows when aiming at the graph element which has additional information.
+                        <br>- clicking at the element will add it to the filter list which will be used to extract specific data and update graphs
+                        <br>- Clicking at the added filter will remove it from the filter list
+                        <br>- Clicking Apply will apply filters and update graphs
+                        <br>- Clicking remove will remove all filters and update graphs
+                    </p>
+                </div>
             </div>
-            <div class="row gx-3">
+        </div>
+        <div class="p-3 bg-dark" id="filter-bar">
+            <button class="remove-filters mx-1" onclick="RemoveFilters()">remove</button>
+            <button class="apply-filters" onclick="ApplyFilters()">Apply</button>
+        </div>
+        <div class="container-fluid" id="main">
+            <div class="row gx-3 mb-0">
                 <div class="col-lg-8">
                     <div class="row gx-3">
                         <div class="col-lg-6 svg-container">
