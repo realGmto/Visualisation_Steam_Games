@@ -29,7 +29,7 @@ function Draw_line_diagram(){
     y_line.domain([0, Math.max(...data_line.map(o => o.price))]).nice();   //DO NOT USE d3.max() for some reason it doesn't return correctly. ONLY ON THIS!
 
     xAxis_line.transition().duration(750).call(d3.axisBottom(x_line).ticks().tickFormat(d3.format(".0f")));
-    yAxis_line.transition().duration(750).call(d3.axisLeft(y_line).tickSize(0).tickPadding(10))
+    yAxis_line.transition().duration(750).call(d3.axisLeft(y_line).tickSize(5).tickPadding(10))
 
     line = d3.line()
         .defined(d => !isNaN(d.price))
